@@ -91,22 +91,22 @@ class Lexer(_reader: Reader) {
           }
         }
     }
+  }
 
-    def innerReadLine(value: String): Unit = {
-      val lineNo = reader.getLineNumber
-      val matcher = pattern.matcher(value)
-      matcher.useTransparentBounds(true).useAnchoringBounds(false)
+  private def innerReadLine(value: String): Unit = {
+    val lineNo = reader.getLineNumber
+    val matcher = pattern.matcher(value)
+    matcher.useTransparentBounds(true).useAnchoringBounds(false)
 
-      var position = 0
-      val endPoint = value.length
+    var position = 0
+    val endPoint = value.length
 
-      while (position < endPoint) {
-        matcher.region(position, endPoint)
+    while (position < endPoint) {
+      matcher.region(position, endPoint)
 
-        if (matcher.lookingAt) {
-          addToken(lineNo, matcher)
-          position = matcher.end
-        }
+      if (matcher.lookingAt) {
+        addToken(lineNo, matcher)
+        position = matcher.end
       }
     }
   }
