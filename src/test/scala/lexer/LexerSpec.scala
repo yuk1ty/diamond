@@ -1,9 +1,12 @@
 package lexer
 
-import java.io.{InputStreamReader, LineNumberReader}
+import java.io.{InputStream, InputStreamReader, LineNumberReader}
 
 import org.scalatest.PrivateMethodTester._
 import org.scalatest.WordSpec
+import token.Token
+
+import scala.collection.mutable.ListBuffer
 
 /*
  * Copyright 2017 Yuki Toyoda
@@ -75,13 +78,14 @@ class LexerSpec extends WordSpec {
       assert(actual == expected)
     }
 
-    // TODO this case will fail because toStringLiteral is looping
-    "create StringToken which has a value of \"scala\"" ignore {
+    "create StringToken which has a value of \"scala\"" in {
       val clazz =
         new Lexer(new LineNumberReader(new InputStreamReader(System.in)))
       val methodName = PrivateMethod[Unit]('innerReadLine)
 
       val text = "\"scala\""
+
+      clazz invokePrivate methodName(text)
 
       val actualToken = clazz.read
       val actual = actualToken.getText
@@ -89,6 +93,72 @@ class LexerSpec extends WordSpec {
 
       assert(actualToken.isString)
       assert(actual == expected)
+    }
+  }
+
+  "read" should {
+    class StandardInputSnatcher extends InputStream {
+
+      private var buffer = new StringBuilder
+
+      def input(in: String): Unit = {
+        buffer.append(in).append(System.getProperty("line.separator"))
+      }
+
+      override def read(): Int = {
+        if (buffer.isEmpty) {
+          return -1
+        }
+
+        val result = buffer.charAt(0)
+        buffer.deleteCharAt(0)
+
+        result
+      }
+    }
+
+    object LexerRunner {
+
+      def tokens(lexer: Lexer): List[Token] = {
+        var end = true
+        val tokens = ListBuffer[Token]()
+
+        while (end) {
+          val token = lexer.read
+          if (token == Token.EOF) {
+            end = false
+          } else {
+            tokens += token
+          }
+        }
+
+        tokens.toList
+      }
+    }
+
+    "interpret simple formula" ignore {
+      val snatcher = new StandardInputSnatcher
+      snatcher.input("a = 1 + 2;")
+
+      val clazz =
+        new Lexer(new LineNumberReader(new InputStreamReader(snatcher)))
+      val tokens = LexerRunner.tokens(clazz)
+      tokens.foreach(println)
+    }
+
+    "interpret if clause" in {
+      val snatcher = new StandardInputSnatcher
+      val code = "if (flag) {"
+        .concat("a = 1 + 2")
+        .concat("} else {")
+        .concat("b = 1")
+        .concat("}")
+      snatcher.input(code)
+
+      val clazz =
+        new Lexer(new LineNumberReader(new InputStreamReader(snatcher)))
+      val tokens = LexerRunner.tokens(clazz)
+      tokens.foreach(println)
     }
   }
 }
