@@ -16,4 +16,15 @@ package ast
  * limitations under the License.
  */
 
-class ASTree {}
+abstract class ASTree extends Iterable[ASTree] {
+
+  def child(i: Int): ASTree
+
+  def numberOfChildren(): Int
+
+  def children(): Iterator[ASTree]
+
+  def location: String
+
+  def iterator: Iterator[ASTree] = children()
+}

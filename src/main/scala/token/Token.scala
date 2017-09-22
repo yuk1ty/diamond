@@ -36,7 +36,7 @@ sealed abstract class Token(_line: Int) {
 
   def isString: Boolean = false
 
-  def getValue: Int = throw new DiamondException("This is not NumberToken.", new ASTree)
+  def getValue: Int = 0
 
   def getText: String = ""
 }
