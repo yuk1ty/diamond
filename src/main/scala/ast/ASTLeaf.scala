@@ -1,7 +1,6 @@
 package ast
 
-import org.scalatest.WordSpec
-import token.StringToken
+import token.Token
 
 /*
 * Copyright 2017 Yuki Toyoda
@@ -19,17 +18,24 @@ import token.StringToken
 * limitations under the License.
 */
 
-class ASLeafSpec extends WordSpec {
+object ASTLeaf {
 
-  "ASLeaf" should {
-    "return the appropriate token text" in {
-      val leaf = new ASLeaf(new StringToken(1, "string token"))
-      assert(leaf.toString() == "string token")
-    }
+  val EMPTY: List[ASTree] = List[ASTree]()
+}
 
-    "return the appropriate location" in {
-      val leaf = new ASLeaf(new StringToken(1, "string token"))
-      assert(leaf.location == "at line 1")
-    }
-  }
+class ASTLeaf(_token: Token) extends ASTree {
+
+  protected val token: Token = _token
+
+  override def child(i: Int): Option[ASTree] = None
+
+  override def numberOfChildren(): Int = 0
+
+  override def into_iter(): Iterator[ASTree] = ASTLeaf.EMPTY.iterator
+
+  override def toString(): String = token.getText
+
+  override def location: String = "at line ".concat(token.lineNumber.toString)
+
+  def toToken(): Token = token
 }

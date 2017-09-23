@@ -1,9 +1,5 @@
 package ast
 
-import java.util
-
-import token.Token
-
 /*
 * Copyright 2017 Yuki Toyoda
 *
@@ -20,22 +16,16 @@ import token.Token
 * limitations under the License.
 */
 
-object ASLeaf {
+class BinaryExpr(_list: List[ASTree]) extends ASTList(_list) {
 
-  val EMPTY: List[ASTree] = List[ASTree]()
-}
+  def left(): Option[ASTree] = child(0)
 
-class ASLeaf(_token: Token) extends ASTree {
+  def operator(): String = {
+    child(1) match {
+      case Some(ex) => ex.asInstanceOf[ASTLeaf].toToken().getText
+      case None => "" // TODO Exception?
+    }
+  }
 
-  protected val token: Token = _token
-
-  override def child(i: Int): ASTree = throw new IndexOutOfBoundsException
-
-  override def numberOfChildren(): Int = 0
-
-  override def children(): Iterator[ASTree] = ASLeaf.EMPTY.iterator
-
-  override def toString(): String = token.getText
-
-  override def location: String = "at line ".concat(token.lineNumber.toString)
+  def right(): Option[ASTree] = child(2)
 }

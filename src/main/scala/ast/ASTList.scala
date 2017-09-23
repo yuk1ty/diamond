@@ -16,15 +16,17 @@ package ast
  * limitations under the License.
  */
 
-trait ASTree extends Iterable[ASTree] {
+class ASTList(_list: List[ASTree]) extends ASTree {
 
-  def child(i: Int): Option[ASTree]
+  protected val children: List[ASTree] = _list
 
-  def numberOfChildren(): Int
+  override def child(i: Int): Option[ASTree] = Option(children.apply(i))
 
-  def into_iter(): Iterator[ASTree]
+  override def numberOfChildren(): Int = children.size
 
-  def location: String
+  override def into_iter(): Iterator[ASTree] = children.iterator
 
-  def iterator: Iterator[ASTree] = into_iter()
+  override def location: String = {
+    children.map(f => f.location).filter(s => !s.isEmpty).head
+  }
 }
