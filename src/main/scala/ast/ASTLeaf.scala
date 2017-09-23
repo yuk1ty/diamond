@@ -40,6 +40,13 @@ sealed class ASTLeaf(_token: Token) extends ASTree {
   def toToken(): Token = token
 }
 
+// NumberLiteral
+
+case class NumberLiteral(_token: Token) extends ASTLeaf(_token) {
+
+  def value(): Int = toToken().getValue
+}
+
 // StringLiteral
 
 case class StringLiteral(_token: Token) extends ASTLeaf(_) {

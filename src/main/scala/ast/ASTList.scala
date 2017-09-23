@@ -1,5 +1,7 @@
 package ast
 
+import token.Token
+
 import scala.collection.JavaConverters._
 
 /*
@@ -41,6 +43,7 @@ sealed class ASTList(_list: List[ASTree]) extends ASTree {
 }
 
 // BinaryExpr
+
 case class BinaryExpr(_list: List[ASTree]) extends ASTList(_list) {
 
   def left(): ASTree = child(0)
