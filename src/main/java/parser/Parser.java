@@ -31,6 +31,8 @@ import ast.ASTList;
 import parser.exception.ParseException;
 import token.Token;
 
+// Thank You!
+// @see: https://github.com/chibash/stone/blob/master/src/stone/Parser.java
 public class Parser {
     protected static abstract class Element {
         protected abstract void parse(Lexer lexer, List<ASTree> res)
@@ -273,6 +275,7 @@ public class Parser {
                         if (results.size() == 1)
                             return results.get(0);
                         else
+                            // modified for Scala ASTList class
                             return ASTList$.MODULE$.fromJavaApi(results);
                     }
                 };
