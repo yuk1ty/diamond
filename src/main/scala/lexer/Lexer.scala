@@ -1,7 +1,6 @@
 package lexer
 
-import java.io.{IOException, LineNumberReader, Reader}
-import java.text.ParseException
+import java.io.{LineNumberReader, Reader}
 import java.util.regex.{Matcher, Pattern}
 
 import token.{IdentifierToken, NumberToken, StringToken, Token}
@@ -60,7 +59,7 @@ class Lexer(_reader: Reader) {
   private def fillQueue(i: Int): Boolean = {
     while (i >= queue.size) {
       if (hasMore) {
-        readLine
+        readLine()
       } else {
         return false
       }
@@ -68,7 +67,7 @@ class Lexer(_reader: Reader) {
     true
   }
 
-  protected def readLine: Unit = {
+  protected def readLine(): Unit = {
     val memorized: Either[Throwable, Option[String]] = try {
       Right(Option(reader.readLine()))
     } catch {
@@ -79,12 +78,8 @@ class Lexer(_reader: Reader) {
       case Left(e) => e.printStackTrace()
       case Right(op) =>
         op match {
-          case Some(value) => {
-            innerReadLine(value)
-          }
-          case None => {
-            hasMore = false
-          }
+          case Some(value) => innerReadLine(value)
+          case None        => hasMore = false
         }
     }
   }
@@ -109,24 +104,22 @@ class Lexer(_reader: Reader) {
 
   protected def addToken(lineNo: Int, matcher: Matcher): Unit = {
     toOption(matcher.group(1)) match {
-      case Some(m) => {
+      case Some(m) =>
         toOption(matcher.group(2)) match {
-          case None => {
+          case None =>
             val tk = if (toOption(matcher.group(3)).nonEmpty) {
-              new NumberToken(lineNo, m.toInt)
+              NumberToken(lineNo, m.toInt)
             } else if (toOption(matcher.group(4)).nonEmpty) {
-              new StringToken(lineNo, toStringLiteral(m))
+              StringToken(lineNo, toStringLiteral(m))
             } else {
-              new IdentifierToken(lineNo, m)
+              IdentifierToken(lineNo, m)
             }
             queue.+=(tk)
-          }
         }
-      }
     }
 
     def toOption(result: String): Option[String] = {
-      return Option(result)
+      Option(result)
     }
 
     def toStringLiteral(text: String): String = {

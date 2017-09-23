@@ -1,8 +1,5 @@
 package token
 
-import ast.ASTree
-import exception.DiamondException
-
 /*
  * Copyright 2017 Yuki Toyoda
  *

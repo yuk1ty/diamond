@@ -1,5 +1,8 @@
 package ast
 
+import scala.collection.mutable.ListBuffer
+import scala.collection.JavaConverters._
+
 /*
  * Copyright 2017 Yuki Toyoda
  *
@@ -15,6 +18,13 @@ package ast
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+object ASTList {
+
+  def fromJavaApi(list: java.util.List[ASTree]): ASTList = {
+    new ASTList(list.asScala.toList)
+  }
+}
 
 class ASTList(_list: List[ASTree]) extends ASTree {
 
