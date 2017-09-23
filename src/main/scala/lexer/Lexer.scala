@@ -41,7 +41,6 @@ class Lexer(_reader: Reader) {
 
   var reader: LineNumberReader = new LineNumberReader(_reader)
 
-  @throws[ParseException]
   def read: Token = {
     if (fillQueue(0)) {
       queue.remove(0)
@@ -50,7 +49,6 @@ class Lexer(_reader: Reader) {
     }
   }
 
-  @throws[ParseException]
   def peek(i: Int): Token = {
     if (fillQueue(i)) {
       queue.apply(i)
@@ -59,24 +57,22 @@ class Lexer(_reader: Reader) {
     }
   }
 
-  @throws[ParseException]
   private def fillQueue(i: Int): Boolean = {
     while (i >= queue.size) {
       if (hasMore) {
         readLine
       } else {
-        false
+        return false
       }
     }
     true
   }
 
-  @throws[ParseException]
   protected def readLine: Unit = {
-    val memorized: Either[IOException, Option[String]] = try {
+    val memorized: Either[Throwable, Option[String]] = try {
       Right(Option(reader.readLine()))
     } catch {
-      case e: IOException => Left(e)
+      case e: Throwable => Left(e)
     }
 
     memorized match {

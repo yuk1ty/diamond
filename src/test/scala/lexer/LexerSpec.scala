@@ -4,7 +4,7 @@ import java.io.{InputStream, InputStreamReader, LineNumberReader}
 
 import org.scalatest.PrivateMethodTester._
 import org.scalatest.WordSpec
-import token.Token
+import token.{IdentifierToken, NumberToken, Token}
 
 import scala.collection.mutable.ListBuffer
 
@@ -99,7 +99,7 @@ class LexerSpec extends WordSpec {
   "read" should {
     class StandardInputSnatcher extends InputStream {
 
-      private var buffer = new StringBuilder
+      private val buffer = new StringBuilder
 
       def input(in: String): Unit = {
         buffer.append(in).append(System.getProperty("line.separator"))
@@ -124,7 +124,7 @@ class LexerSpec extends WordSpec {
         val tokens = ListBuffer[Token]()
 
         while (end) {
-          val token = lexer.read
+          val token: Token = lexer.read
           if (token == Token.EOF) {
             end = false
           } else {
@@ -136,14 +136,21 @@ class LexerSpec extends WordSpec {
       }
     }
 
-    "interpret simple formula" ignore {
+    "interpret simple formula" in {
       val snatcher = new StandardInputSnatcher
       snatcher.input("a = 1 + 2;")
 
       val clazz =
         new Lexer(new LineNumberReader(new InputStreamReader(snatcher)))
+
       val tokens = LexerRunner.tokens(clazz)
-      tokens.foreach(println)
+      val expected = List[Token](IdentifierToken(1, "a"),
+                                 IdentifierToken(1, "="),
+                                 NumberToken(1, 1),
+                                 IdentifierToken(1, "+"),
+                                 NumberToken(1, 2),
+                                 IdentifierToken(1, ";"))
+      assert(tokens == expected)
     }
 
     "interpret if clause" in {
@@ -157,8 +164,28 @@ class LexerSpec extends WordSpec {
 
       val clazz =
         new Lexer(new LineNumberReader(new InputStreamReader(snatcher)))
+
       val tokens = LexerRunner.tokens(clazz)
-      tokens.foreach(println)
+      val expected = List[Token](
+        IdentifierToken(1, "if"),
+        IdentifierToken(1, "("),
+        IdentifierToken(1, "flag"),
+        IdentifierToken(1, ")"),
+        IdentifierToken(1, "{"),
+        IdentifierToken(1, "a"),
+        IdentifierToken(1, "="),
+        NumberToken(1, 1),
+        IdentifierToken(1, "+"),
+        NumberToken(1, 2),
+        IdentifierToken(1, "}"),
+        IdentifierToken(1, "else"),
+        IdentifierToken(1, "{"),
+        IdentifierToken(1, "b"),
+        IdentifierToken(1, "="),
+        NumberToken(1, 1),
+        IdentifierToken(1, "}")
+      )
+      assert(tokens == expected)
     }
   }
 }
