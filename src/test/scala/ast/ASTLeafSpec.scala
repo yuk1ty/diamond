@@ -35,14 +35,14 @@ class ASTLeafSpec extends WordSpec {
 
   "Name" should {
     "return its appropriate name" in {
-      val name = new Name(StringToken(1, "name"))
+      val name = Name(StringToken(1, "name"))
       assert(name.name() == "name")
     }
   }
 
   "NumberLiteral" should {
     "return its appropriate value" in {
-      val numberLiteral = new NumberLiteral(NumberToken(1, 999))
+      val numberLiteral = NumberLiteral(NumberToken(1, 999))
       assert(numberLiteral.value() == 999)
     }
   }

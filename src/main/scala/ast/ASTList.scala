@@ -108,4 +108,4 @@ case class WhileStatement(_c: List[ASTree]) extends ASTList(_) {
 
 // NullStatement
 
-case class NullStatemenet(_c: List[ASTree]) extends ASTList(_) {}
+case class NullStatement(_c: List[ASTree]) extends ASTList(_) {}
