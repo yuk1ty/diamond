@@ -343,6 +343,8 @@ public class Parser {
             } catch (NoSuchMethodException e) {
             }
             try {
+                // TODO
+                // Scala's case class has "private constructor".
                 final Constructor<? extends ASTree> c
                         = clazz.getConstructor(argType);
                 return new Factory() {
