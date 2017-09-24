@@ -42,21 +42,21 @@ sealed class ASTLeaf(_token: Token) extends ASTree {
 
 // NumberLiteral
 
-case class NumberLiteral(_token: Token) extends ASTLeaf(_) {
+case class NumberLiteral(_token: Token) extends ASTLeaf(_token) {
 
   def value(): Int = toToken().getValue
 }
 
 // StringLiteral
 
-case class StringLiteral(_token: Token) extends ASTLeaf(_) {
+case class StringLiteral(_token: Token) extends ASTLeaf(_token) {
 
   def value(): String = toToken().getText
 }
 
 // Name
 
-case class Name(_token: Token) extends ASTLeaf(_) {
+case class Name(_token: Token) extends ASTLeaf(_token) {
 
   def name(): String = toToken().getText
 }

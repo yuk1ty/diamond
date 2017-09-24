@@ -1,6 +1,7 @@
 package ast
 
 import org.scalatest.WordSpec
+import token.{IdentifierToken, NumberToken}
 
 /*
  * Copyright 2017 Yuki Toyoda
@@ -20,5 +21,48 @@ import org.scalatest.WordSpec
 
 class ASTListSpec extends WordSpec {
 
-  // test with BinaryExpr
+  "ASTList" should {
+    "return its appropriate child" in {
+      val actual = new ASTList(
+        List[ASTree](NumberLiteral(NumberToken(1, 1)),
+                     NumberLiteral(NumberToken(1, 2)),
+                     NumberLiteral(NumberToken(1, 3))))
+      val expected = NumberLiteral(NumberToken(1, 1))
+      assert(actual.child(0).get == expected)
+    }
+
+    "has appropriate children size in simple pattern" in {
+      val actual = new ASTList(
+        List[ASTree](NumberLiteral(NumberToken(1, 1)),
+                     NumberLiteral(NumberToken(1, 2)),
+                     NumberLiteral(NumberToken(1, 3))))
+      val expected = 3
+
+      assert(actual.numberOfChildren() == expected)
+    }
+
+    "has appropriate children size in nested pattern" in {
+      // (1 + 2) + 3
+      val actual = new ASTList(
+        List[ASTree](
+          PrimaryExpr(List[ASTree](Name(IdentifierToken(2, "(")))),
+          NumberLiteral(NumberToken(1, 1)),
+          PrimaryExpr(List[ASTree](Name(IdentifierToken(1, "+")))),
+          NumberLiteral(NumberToken(1, 2)),
+          PrimaryExpr(List[ASTree](Name(IdentifierToken(1, ")")))),
+          PrimaryExpr(List[ASTree](Name(IdentifierToken(1, "+")))),
+          NumberLiteral(NumberToken(1, 3))
+        ))
+
+      {
+        val expected = 7
+        assert(actual.numberOfChildren() == expected)
+      }
+
+      {
+        val expected = "at line 2"
+        assert(actual.location == expected)
+      }
+    }
+  }
 }
