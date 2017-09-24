@@ -53,3 +53,10 @@ case class StringLiteral(_token: Token) extends ASTLeaf(_) {
 
   def value(): String = toToken().getText
 }
+
+// Name
+
+case class Name(_token: Token) extends ASTLeaf(_token) {
+
+  def name(): String = toToken().getText
+}
