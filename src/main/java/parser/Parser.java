@@ -16,10 +16,7 @@ package parser;
 * limitations under the License.
 */
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.ArrayList;
+import java.util.*;
 import java.lang.reflect.Method;
 import java.lang.reflect.Constructor;
 
@@ -146,9 +143,9 @@ public class Parser {
     }
 
     protected static class IdToken extends AToken {
-        HashSet<String> reserved;
+        Set<String> reserved;
 
-        protected IdToken(Class<? extends ASTLeaf> type, HashSet<String> r) {
+        protected IdToken(Class<? extends ASTLeaf> type, Set<String> r) {
             super(type);
             reserved = r != null ? r : new HashSet<String>();
         }
@@ -416,12 +413,11 @@ public class Parser {
         return this;
     }
 
-    public Parser identifier(HashSet<String> reserved) {
+    public Parser identifier(Set<String> reserved) {
         return identifier(null, reserved);
     }
 
-    public Parser identifier(Class<? extends ASTLeaf> clazz,
-                             HashSet<String> reserved) {
+    public Parser identifier(Class<? extends ASTLeaf> clazz, Set<String> reserved) {
         elements.add(new IdToken(clazz, reserved));
         return this;
     }
