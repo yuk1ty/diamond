@@ -52,7 +52,8 @@ class ParserFactorySpec extends WordSpec {
       val lexer = new Lexer(new LineNumberReader(new InputStreamReader(snatcher)))
 
       while(lexer.peek(0) != Token.EOF) {
-        ParserFactory.parse(lexer).foreach(tree => println(tree.location))
+        val ast = ParserFactory.parse(lexer)
+        println(ast.getOrElse())
       }
     }
   }
