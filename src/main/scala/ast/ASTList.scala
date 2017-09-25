@@ -22,14 +22,93 @@ import scala.collection.JavaConverters._
 
 object ASTList {
 
-  def fromJavaApi(list: java.util.List[ASTree]): ASTList = {
-    new ASTList(list.asScala.toList)
+  def newInstance(list: List[ASTree]): ASTList = {
+    new ASTList(list.asJava)
   }
+
+  def newInstance(list: java.util.List[ASTree]): ASTList = {
+    new ASTList(list)
+  }
+
+  // BinaryExpr
+
+  object BinaryExpr {
+
+    def newInstance(c: List[ASTree]): ASTree = new BinaryExpr(c.asJava)
+  }
+
+  case class BinaryExpr(_list: java.util.List[ASTree]) extends ASTList(_list) {
+
+    def left(): ASTree = child(0).get
+
+    def operator(): String = child(1).asInstanceOf[ASTLeaf].toToken().getText
+
+    def right(): ASTree = child(2).get
+  }
+
+  // PrimaryExpr
+
+  object PrimaryExpr {
+
+    def newInstance(c: List[ASTree]): PrimaryExpr = new PrimaryExpr(c.asJava)
+
+    def create(c: List[ASTree]): ASTree = {
+      c.size match {
+        case 1 => c.head
+        case _ => new PrimaryExpr(c.asJava)
+      }
+    }
+  }
+
+  case class PrimaryExpr(_c: java.util.List[ASTree]) extends ASTList(_c) {}
+
+  // NegativeExpr
+
+  case class NegativeExpr(_c: java.util.List[ASTree]) extends ASTList(_c) {
+
+    def operand(): ASTree = child(0).get
+
+    override def toString(): String = "-" + operand()
+  }
+
+  // BlockStatement
+
+  case class BlockStatement(_c: java.util.List[ASTree]) extends ASTList(_c) {}
+
+  // IfStatement
+
+  case class IfStatement(_c: java.util.List[ASTree]) extends ASTList(_c) {
+
+    def condition(): ASTree = child(0).get
+
+    def thenBlock(): ASTree = child(1).get
+
+    def elseBlock(): Option[ASTree] =
+      if (numberOfChildren() > 2) Some(child(2).get) else None
+
+    override def toString(): String =
+      "(if " + condition() + " " + thenBlock() + " else " + elseBlock() + ")"
+  }
+
+  // WhileStatement
+
+  case class WhileStatement(_c: java.util.List[ASTree]) extends ASTList(_c) {
+
+    def condition(): ASTree = child(0).get
+
+    def body(): ASTree = child(1).get
+
+    override def toString(): String = "(while " + condition() + " " + body() + ")"
+  }
+
+  // NullStatement
+
+  case class NullStatement(_c: java.util.List[ASTree]) extends ASTList(_c) {}
 }
 
-sealed class ASTList(_list: List[ASTree]) extends ASTree {
+sealed class ASTList(_list: java.util.List[ASTree]) extends ASTree {
 
-  protected val children: List[ASTree] = _list
+  protected val children: List[ASTree] = _list.asScala.toList
 
   override def child(i: Int): Option[ASTree] = Option(children.apply(i))
 
@@ -47,71 +126,3 @@ sealed class ASTList(_list: List[ASTree]) extends ASTree {
     joiner.toString
   }
 }
-
-// BinaryExpr
-
-case class BinaryExpr(_list: List[ASTree]) extends ASTList(_list) {
-
-  def left(): ASTree = child(0).get
-
-  def operator(): String = child(1).asInstanceOf[ASTLeaf].toToken().getText
-
-  def right(): ASTree = child(2).get
-}
-
-// PrimaryExpr
-
-object PrimaryExpr {
-
-  def create(c: List[ASTree]): ASTree = {
-    c.size match {
-      case 1 => c.head
-      case _ => new PrimaryExpr(c)
-    }
-  }
-}
-
-case class PrimaryExpr(_c: List[ASTree]) extends ASTList(_c) {}
-
-// NegativeExpr
-
-case class NegativeExpr(_c: List[ASTree]) extends ASTList(_c) {
-
-  def operand(): ASTree = child(0).get
-
-  override def toString(): String = "-" + operand()
-}
-
-// BlockStatement
-
-case class BlockStatement(_c: List[ASTree]) extends ASTList(_c) {}
-
-// IfStatement
-
-case class IfStatement(_c: List[ASTree]) extends ASTList(_c) {
-
-  def condition(): ASTree = child(0).get
-
-  def thenBlock(): ASTree = child(1).get
-
-  def elseBlock(): Option[ASTree] =
-    if (numberOfChildren() > 2) Some(child(2).get) else None
-
-  override def toString(): String =
-    "(if " + condition() + " " + thenBlock() + " else " + elseBlock() + ")"
-}
-
-// WhileStatement
-
-case class WhileStatement(_c: List[ASTree]) extends ASTList(_c) {
-
-  def condition(): ASTree = child(0).get
-
-  def body(): ASTree = child(1).get
-
-  override def toString(): String = "(while " + condition() + " " + body() + ")"
-}
-
-// NullStatement
-
-case class NullStatement(_c: List[ASTree]) extends ASTList(_c) {}

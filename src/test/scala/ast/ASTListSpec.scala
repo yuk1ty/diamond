@@ -1,5 +1,7 @@
 package ast
 
+import ast.ASTLeaf.{Name, NumberLiteral}
+import ast.ASTList.PrimaryExpr
 import org.scalatest.WordSpec
 import token.{IdentifierToken, NumberToken}
 
@@ -23,7 +25,7 @@ class ASTListSpec extends WordSpec {
 
   "ASTList" should {
     "return its appropriate child" in {
-      val actual = new ASTList(
+      val actual = ASTList.newInstance(
         List[ASTree](NumberLiteral(NumberToken(1, 1)),
                      NumberLiteral(NumberToken(1, 2)),
                      NumberLiteral(NumberToken(1, 3))))
@@ -32,7 +34,7 @@ class ASTListSpec extends WordSpec {
     }
 
     "has appropriate children size in simple pattern" in {
-      val actual = new ASTList(
+      val actual = ASTList.newInstance(
         List[ASTree](NumberLiteral(NumberToken(1, 1)),
                      NumberLiteral(NumberToken(1, 2)),
                      NumberLiteral(NumberToken(1, 3))))
@@ -43,14 +45,14 @@ class ASTListSpec extends WordSpec {
 
     "has appropriate children size in nested pattern" in {
       // (1 + 2) + 3
-      val actual = new ASTList(
+      val actual = ASTList.newInstance(
         List[ASTree](
-          PrimaryExpr(List[ASTree](Name(IdentifierToken(2, "(")))),
+          PrimaryExpr.newInstance(List[ASTree](Name(IdentifierToken(2, "(")))),
           NumberLiteral(NumberToken(1, 1)),
-          PrimaryExpr(List[ASTree](Name(IdentifierToken(1, "+")))),
+          PrimaryExpr.newInstance(List[ASTree](Name(IdentifierToken(1, "+")))),
           NumberLiteral(NumberToken(1, 2)),
-          PrimaryExpr(List[ASTree](Name(IdentifierToken(1, ")")))),
-          PrimaryExpr(List[ASTree](Name(IdentifierToken(1, "+")))),
+          PrimaryExpr.newInstance(List[ASTree](Name(IdentifierToken(1, ")")))),
+          PrimaryExpr.newInstance(List[ASTree](Name(IdentifierToken(1, "+")))),
           NumberLiteral(NumberToken(1, 3))
         ))
 

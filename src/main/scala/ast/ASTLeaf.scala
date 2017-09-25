@@ -21,6 +21,28 @@ import token.Token
 object ASTLeaf {
 
   val EMPTY: List[ASTree] = List[ASTree]()
+
+  // NumberLiteral
+
+  case class NumberLiteral(_token: Token) extends ASTLeaf(_token) {
+
+    def value(): Int = toToken().getValue
+  }
+
+  // StringLiteral
+
+  case class StringLiteral(_token: Token) extends ASTLeaf(_token) {
+
+    def value(): String = toToken().getText
+  }
+
+  // Name
+
+  case class Name(_token: Token) extends ASTLeaf(_token) {
+
+    def name(): String = toToken().getText
+  }
+
 }
 
 sealed class ASTLeaf(_token: Token) extends ASTree {
@@ -38,25 +60,4 @@ sealed class ASTLeaf(_token: Token) extends ASTree {
   override def location: String = "at line ".concat(token.lineNumber.toString)
 
   def toToken(): Token = token
-}
-
-// NumberLiteral
-
-case class NumberLiteral(_token: Token) extends ASTLeaf(_token) {
-
-  def value(): Int = toToken().getValue
-}
-
-// StringLiteral
-
-case class StringLiteral(_token: Token) extends ASTLeaf(_token) {
-
-  def value(): String = toToken().getText
-}
-
-// Name
-
-case class Name(_token: Token) extends ASTLeaf(_token) {
-
-  def name(): String = toToken().getText
 }

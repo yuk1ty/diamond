@@ -322,7 +322,7 @@ public class Parser {
                             return results.get(0);
                         else
                             // modified for Scala ASTList class
-                            return ASTList$.MODULE$.fromJavaApi(results);
+                            return ASTList$.MODULE$.newInstance(results);
                     }
                 };
             return f;
@@ -343,8 +343,6 @@ public class Parser {
             } catch (NoSuchMethodException e) {
             }
             try {
-                // TODO
-                // Scala's case class has "private constructor".
                 final Constructor<? extends ASTree> c
                         = clazz.getConstructor(argType);
                 return new Factory() {

@@ -45,18 +45,14 @@ class ParserFactorySpec extends WordSpec {
       }
     }
 
-    "return appropriate result" ignore {
-      // this test will fail because there is a inconsistency between Scala's class and Java's class
-      // Create some DTOs to Java side???
-
+    "return appropriate result" in {
       val snatcher = new StandardInputSnatcher
       val code = "(1 + 2) + 3"
       snatcher.input(code)
       val lexer = new Lexer(new LineNumberReader(new InputStreamReader(snatcher)))
 
       while(lexer.peek(0) != Token.EOF) {
-        val tree = ParserFactory.parse(lexer)
-        println(tree)
+        ParserFactory.parse(lexer).foreach(tree => println(tree.location))
       }
     }
   }

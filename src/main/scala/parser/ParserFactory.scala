@@ -1,5 +1,7 @@
 package parser
 
+import ast.ASTLeaf.{Name, NumberLiteral, StringLiteral}
+import ast.ASTList._
 import ast._
 import lexer.Lexer
 import parser.Parser.Operators
@@ -54,42 +56,42 @@ object ParserFactory {
 
     val expr0 = rule()
     val primary = Parser
-      .rule(PrimaryExpr.getClass.asInstanceOf[FromASTList])
+      .rule(classOf[PrimaryExpr].asInstanceOf[FromASTList])
       .or(
         rule().sep("(").ast(expr0).sep(")"),
-        rule().number(NumberLiteral.getClass.asInstanceOf[FromASTLeaf]),
-        rule().identifier(Name.getClass.asInstanceOf[FromASTLeaf],
+        rule().number(classOf[NumberLiteral].asInstanceOf[FromASTLeaf]),
+        rule().identifier(classOf[Name].asInstanceOf[FromASTLeaf],
                           reversed.asJava),
-        rule().string(StringLiteral.getClass.asInstanceOf[FromASTLeaf])
+        rule().string(classOf[StringLiteral].asInstanceOf[FromASTLeaf])
       )
     val factor = rule().or(
       Parser
-        .rule(NegativeExpr.getClass.asInstanceOf[FromASTList])
+        .rule(classOf[NegativeExpr].asInstanceOf[FromASTList])
         .sep("-")
         .ast(primary),
       primary)
-    val expr = expr0.expression(BinaryExpr.getClass.asInstanceOf[FromASTList],
+    val expr = expr0.expression(classOf[BinaryExpr].asInstanceOf[FromASTList],
                                 factor,
                                 operators)
 
     val statement0 = rule()
     val block = Parser
-      .rule(BlockStatement.getClass.asInstanceOf[FromASTList])
+      .rule(classOf[BlockStatement].asInstanceOf[FromASTList])
       .sep("{")
       .option(statement0)
       .repeat(rule().sep(";", Token.EOL).option(statement0))
       .sep("}")
     val simple =
-      Parser.rule(PrimaryExpr.getClass.asInstanceOf[FromASTList]).ast(expr)
+      Parser.rule(classOf[PrimaryExpr].asInstanceOf[FromASTList]).ast(expr)
     val statement = statement0.or(
       Parser
-        .rule(IfStatement.getClass.asInstanceOf[FromASTList])
+        .rule(classOf[IfStatement].asInstanceOf[FromASTList])
         .sep("if")
         .ast(expr)
         .ast(block)
         .option(rule().sep("else").ast(block)),
       Parser
-        .rule(WhileStatement.getClass.asInstanceOf[FromASTList])
+        .rule(classOf[WhileStatement].asInstanceOf[FromASTList])
         .sep("while")
         .ast(expr)
         .ast(block),
@@ -99,7 +101,7 @@ object ParserFactory {
     val program = rule().or(
       statement,
       Parser
-        .rule(NullStatement.getClass.asInstanceOf[FromASTList])
+        .rule(classOf[NullStatement].asInstanceOf[FromASTList])
         .sep(";", Token.EOL))
 
     program

@@ -1,5 +1,6 @@
 package ast
 
+import ast.ASTLeaf.{Name, NumberLiteral}
 import org.scalatest.WordSpec
 import token.{NumberToken, StringToken}
 
