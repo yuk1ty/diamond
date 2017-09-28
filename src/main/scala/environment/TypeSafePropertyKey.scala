@@ -1,5 +1,7 @@
 package environment
 
+import ast.ASTLeaf
+
 /*
 * Copyright 2017 Yuki Toyoda
 *
@@ -16,9 +18,18 @@ package environment
 * limitations under the License.
 */
 
-trait Environment[T] {
+class TypeSafePropertyKey[K](_key: String, _value: K) {
 
-  def put(propertyKey: TypeSafePropertyKey[T], instance: T): Unit
+  val key: String = _key
 
-  def get(key: TypeSafePropertyKey[T]): Option[T]
+  val value: K = _value
+
+  override def equals(obj: Any): Boolean = {
+    val that = obj.asInstanceOf[TypeSafePropertyKey[K]]
+    key == that.key && value == that.value
+  }
+
+  override def hashCode(): Int = {
+    key.hashCode + value.hashCode()
+  }
 }

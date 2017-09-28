@@ -1,5 +1,7 @@
 package environment
 
+import ast.ASTLeaf.Name
+
 /*
 * Copyright 2017 Yuki Toyoda
 *
@@ -16,9 +18,6 @@ package environment
 * limitations under the License.
 */
 
-trait Environment[T] {
+class NameEnvironment extends AbstractEnvironment[Name] {
 
-  def put(propertyKey: TypeSafePropertyKey[T], instance: T): Unit
-
-  def get(key: TypeSafePropertyKey[T]): Option[T]
 }

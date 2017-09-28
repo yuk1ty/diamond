@@ -1,5 +1,7 @@
 package environment
 
+import scala.collection.mutable
+
 /*
 * Copyright 2017 Yuki Toyoda
 *
@@ -16,9 +18,11 @@ package environment
 * limitations under the License.
 */
 
-trait Environment[T] {
+abstract class AbstractEnvironment[T] extends Environment[T] {
 
-  def put(propertyKey: TypeSafePropertyKey[T], instance: T): Unit
+  private val repository = mutable.Map[TypeSafePropertyKey[T], T]()
 
-  def get(key: TypeSafePropertyKey[T]): Option[T]
+  def put(key: TypeSafePropertyKey[T], instance: T): Unit = repository += (key -> instance)
+
+  def get(key: TypeSafePropertyKey[T]): Option[T] = repository.get(key)
 }
