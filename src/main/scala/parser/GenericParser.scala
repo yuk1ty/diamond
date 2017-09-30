@@ -24,7 +24,7 @@ import token.Token
  * limitations under the License.
  */
 
-object Parsers {
+object GenericParser {
 
   private val reversed: Set[String] = Set(";", "}", Token.EOL)
 

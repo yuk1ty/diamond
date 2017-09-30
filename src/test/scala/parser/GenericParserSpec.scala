@@ -22,7 +22,7 @@ import token.Token
 * limitations under the License.
 */
 
-class ParsersSpec extends WordSpec {
+class GenericParserSpec extends WordSpec {
 
   "parse" should {
     class StandardInputSnatcher extends InputStream {
@@ -52,7 +52,7 @@ class ParsersSpec extends WordSpec {
       val lexer = new Lexer(new LineNumberReader(new InputStreamReader(snatcher)))
 
       while(lexer.peek(0) != Token.EOF) {
-        val ast = Parsers.parse(lexer)
+        val ast = GenericParser.parse(lexer)
         println(ast.getOrElse())
       }
     }
