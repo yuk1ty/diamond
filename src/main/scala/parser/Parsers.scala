@@ -24,7 +24,7 @@ import token.Token
  * limitations under the License.
  */
 
-object ParserFactory {
+object Parsers {
 
   private val reversed: Set[String] = Set(";", "}", Token.EOL)
 
