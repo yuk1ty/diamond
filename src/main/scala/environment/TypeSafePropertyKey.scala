@@ -18,14 +18,14 @@ import ast.ASTLeaf
 * limitations under the License.
 */
 
-class TypeSafePropertyKey[K](_key: String, _value: K) {
+class TypeSafePropertyKey[V](_key: String, _value: V) {
 
   val key: String = _key
 
-  val value: K = _value
+  val value: V = _value
 
   override def equals(obj: Any): Boolean = {
-    val that = obj.asInstanceOf[TypeSafePropertyKey[K]]
+    val that = obj.asInstanceOf[TypeSafePropertyKey[V]]
     key == that.key && value == that.value
   }
 
