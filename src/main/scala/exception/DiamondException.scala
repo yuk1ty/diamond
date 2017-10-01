@@ -18,5 +18,5 @@ import ast.ASTree
  * limitations under the License.
  */
 
-class DiamondException(message: String, tree: ASTree) extends RuntimeException(message) {
-}
+class DiamondException(message: String, tree: ASTree)
+    extends RuntimeException(message) {}

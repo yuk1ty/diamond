@@ -1,5 +1,7 @@
 package ast
 
+import environment.Environment
+import exception.DiamondException
 import token.Token
 
 /*
@@ -27,6 +29,9 @@ object ASTLeaf {
   case class NumberLiteral(_token: Token) extends ASTLeaf(_token) {
 
     def value(): Int = toToken().getValue
+
+    override def eval(env: Environment): Either[DiamondException, Option[Any]] =
+      Right(Option(value()))
   }
 
   // StringLiteral
@@ -34,6 +39,9 @@ object ASTLeaf {
   case class StringLiteral(_token: Token) extends ASTLeaf(_token) {
 
     def value(): String = toToken().getText
+
+    override def eval(env: Environment): Either[DiamondException, Option[Any]] =
+      Right(Option(value()))
   }
 
   // Name
@@ -41,6 +49,9 @@ object ASTLeaf {
   case class Name(_token: Token) extends ASTLeaf(_token) {
 
     def name(): String = toToken().getText
+
+    override def eval(env: Environment): Either[DiamondException, Option[Any]] =
+      Right(env.get(name()))
   }
 
 }
@@ -60,4 +71,7 @@ sealed class ASTLeaf(_token: Token) extends ASTree {
   override def location: String = "at line ".concat(token.lineNumber.toString)
 
   def toToken(): Token = token
+
+  override def eval(env: Environment): Either[DiamondException, Option[Any]] =
+    Left(new DiamondException("Bad Operation", this))
 }

@@ -52,7 +52,7 @@ class GenericParserSpec extends WordSpec {
       val lexer = new Lexer(new LineNumberReader(new InputStreamReader(snatcher)))
 
       while(lexer.peek(0) != Token.EOF) {
-        val ast = GenericParser.parse(lexer)
+        val ast = new GenericParser().parse(lexer)
         println(ast.getOrElse())
       }
     }

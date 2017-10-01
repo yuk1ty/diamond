@@ -1,9 +1,12 @@
 package ast
 
 import ast.ASTLeaf.{Name, NumberLiteral}
-import ast.ASTList.PrimaryExpr
+import ast.ASTList._
+import environment.NullEnvironment
 import org.scalatest.WordSpec
-import token.{IdentifierToken, NumberToken}
+import token.{IdentifierToken, NumberToken, StringToken}
+
+import scala.collection.JavaConverters._
 
 /*
  * Copyright 2017 Yuki Toyoda
@@ -65,6 +68,64 @@ class ASTListSpec extends WordSpec {
         val expected = "at line 2"
         assert(actual.location == expected)
       }
+    }
+  }
+
+  "NegativeExpr" should {
+    "has appropriate value" in {
+      val expr =
+        NegativeExpr(List[ASTree](Name(IdentifierToken(1, "*"))).asJava)
+
+      {
+        val actual = expr.operand()
+        val expected = Name(IdentifierToken(1, "*"))
+        assert(actual == expected)
+      }
+
+      {
+        val actual = expr.toString()
+        val expected = "-*"
+        assert(actual == expected)
+      }
+
+      {
+        assert(expr.eval(new NullEnvironment()).isLeft)
+      }
+    }
+  }
+
+  "IfStatement" should {
+    "return appropriate value" in {
+      val expr = IfStatement(
+        List[ASTree](Name(StringToken(1, "condition")),
+                     Name(StringToken(1, "thenBlock")),
+                     Name(StringToken(1, "elseBlock"))).asJava)
+
+      assert(expr.condition() == Name(StringToken(1, "condition")))
+      assert(expr.thenBlock() == Name(StringToken(1, "thenBlock")))
+      assert(expr.elseBlock().get == Name(StringToken(1, "elseBlock")))
+
+      assert(expr.toString() == "(if condition thenBlock else elseBlock)")
+    }
+  }
+
+  "WhileStatement" should {
+    "return appropriate value" in {
+      val expr = WhileStatement(
+        List[ASTree](Name(StringToken(1, "condition")),
+                     Name(StringToken(1, "body"))).asJava)
+
+      assert(expr.condition() == Name(StringToken(1, "condition")))
+      assert(expr.body() == Name(StringToken(1, "body")))
+
+      assert(expr.toString() == "(while condition body)")
+    }
+  }
+
+  "NullStatement" should {
+    "return exception if eval method is called" in {
+      val expr = NullStatement(List[ASTree]().asJava)
+      assert(expr.eval(new NullEnvironment()).isLeft)
     }
   }
 }

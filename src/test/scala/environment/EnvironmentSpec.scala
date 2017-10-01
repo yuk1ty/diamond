@@ -24,20 +24,17 @@ import scala.collection.mutable
 
 class EnvironmentSpec extends WordSpec {
 
-  "Environment" should {
-    "be able to put some values" in {
-      // TODO test of "put" method
-    }
+  "NameEnvironment" should {
+    "get its appropriate value" in {
+      val environment = new NameEnvironment()
 
-    "be able to get a property value" in {
-      val environment = new NameEnvironment
-      val expected = Name(StringToken(1, "a"))
-      environment.put(
-        new NamePropertyKey(expected), expected)
+      environment.put("a", Name(StringToken(1, "a")))
+      environment.put("b", Name(StringToken(1, "b")))
+      environment.put("c", Name(StringToken(1, "c")))
 
-      val actual: Name = environment.get(new NamePropertyKey(expected)).get
-
-      assert(expected == actual)
+      assert(environment.get("a").get == Name(StringToken(1, "a")))
+      assert(environment.get("b").get == Name(StringToken(1, "b")))
+      assert(environment.get("c").get == Name(StringToken(1, "c")))
     }
   }
 }

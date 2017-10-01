@@ -1,5 +1,8 @@
 package ast
 
+import environment.Environment
+import exception.DiamondException
+
 /*
  * Copyright 2017 Yuki Toyoda
  *
@@ -27,4 +30,8 @@ trait ASTree extends Iterable[ASTree] {
   def location: String
 
   def iterator: Iterator[ASTree] = into_iter()
+
+  // Parser.java is not supported for Generics,
+  // so the return value of this def is Any
+  def eval(env: Environment): Either[DiamondException, Option[Any]]
 }

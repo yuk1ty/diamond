@@ -4,6 +4,7 @@ import ast.ASTLeaf.{Name, NumberLiteral, StringLiteral}
 import ast.ASTList._
 import ast._
 import lexer.Lexer
+import parser.GenericParser.program
 import parser.Parser.Operators
 import parser.exception.ParseException
 import token.Token
@@ -106,6 +107,9 @@ object GenericParser {
 
     program
   }
+}
+
+class GenericParser {
 
   def parse(lexer: Lexer): Either[ParseException, ASTree] = {
     try {

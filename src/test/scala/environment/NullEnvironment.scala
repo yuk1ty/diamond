@@ -16,9 +16,15 @@ package environment
  * limitations under the License.
  */
 
-trait Environment {
+// Environment class for testing "eval" method
+class NullEnvironment extends Environment {
 
-  def put(propertyKey: String, instance: Any): Unit
+  override def put(propertyKey: String, instance: Any): Unit = {
+    // Do nothing
+  }
 
-  def get(key: String): Option[Any]
+  override def get(key: String): Option[Any] = {
+    // Do nothing
+    None
+  }
 }

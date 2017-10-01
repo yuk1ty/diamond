@@ -1,6 +1,7 @@
-package environment
+package interpreter
 
-import ast.ASTLeaf
+import environment.Environment
+import parser.GenericParser
 
 /*
 * Copyright 2017 Yuki Toyoda
@@ -18,18 +19,9 @@ import ast.ASTLeaf
 * limitations under the License.
 */
 
-class TypeSafePropertyKey[V](_key: String, _value: V) {
+object GenericInterpreter {
 
-  val key: String = _key
+  def run(parser: GenericParser, env: Environment): Unit = {
 
-  val value: V = _value
-
-  override def equals(obj: Any): Boolean = {
-    val that = obj.asInstanceOf[TypeSafePropertyKey[V]]
-    key == that.key && value == that.value
-  }
-
-  override def hashCode(): Int = {
-    key.hashCode + value.hashCode()
   }
 }
