@@ -254,8 +254,7 @@ object ASTList {
 
     override def eval(
         env: Environment): Either[DiamondException, Option[Any]] = {
-      var result: Either[DiamondException, Option[Any]] =
-        Either[DiamondException, Option[Any]]
+      var result: Either[DiamondException, Option[Any]] = Right(None)
       while (true) {
         val c = condition().eval(env)
         if (c.right.get

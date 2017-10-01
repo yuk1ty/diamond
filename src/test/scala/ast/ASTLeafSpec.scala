@@ -1,6 +1,7 @@
 package ast
 
-import ast.ASTLeaf.{Name, NumberLiteral}
+import ast.ASTLeaf.{Name, NumberLiteral, StringLiteral}
+import environment.{NameEnvironment, NullEnvironment}
 import org.scalatest.WordSpec
 import token.{NumberToken, StringToken}
 
@@ -22,7 +23,26 @@ import token.{NumberToken, StringToken}
 
 class ASTLeafSpec extends WordSpec {
 
-  "ASLeaf" should {
+  "ASTLeaf" should {
+    "return empty value" in {
+      assert(ASTLeaf.EMPTY == List.empty)
+    }
+
+    "child method will return None value" in {
+      val leaf = new ASTLeaf(StringToken(1, ""))
+      assert(leaf.child(0).isEmpty)
+    }
+
+    "numberOfChildren method will return 0" in {
+      val leaf = new ASTLeaf(StringToken(1, ""))
+      assert(leaf.numberOfChildren() == 0)
+    }
+
+    "toString method will return some appropriate words" in {
+      val leaf = new ASTLeaf(StringToken(1, "appropriate value"))
+      assert(leaf.toString() == "appropriate value")
+    }
+
     "return the appropriate token text" in {
       val leaf = new ASTLeaf(StringToken(1, "string token"))
       assert(leaf.toString() == "string token")
@@ -32,6 +52,16 @@ class ASTLeafSpec extends WordSpec {
       val leaf = new ASTLeaf(StringToken(1, "string token"))
       assert(leaf.location == "at line 1")
     }
+
+    "return the appropriate token" in {
+      val leaf = new ASTLeaf(NumberToken(1, 1))
+      assert(leaf.toToken() == NumberToken(1, 1))
+    }
+
+    "eval method will return DiamondException" in {
+      val leaf = new ASTLeaf(StringToken(1, ""))
+      assert(leaf.eval(new NullEnvironment).isLeft)
+    }
   }
 
   "Name" should {
@@ -39,12 +69,37 @@ class ASTLeafSpec extends WordSpec {
       val name = Name(StringToken(1, "name"))
       assert(name.name() == "name")
     }
+
+    "eval name and return name string" in {
+      val name = Name(StringToken(1, "name"))
+      val env = new NameEnvironment
+      env.put("name", name)
+
+      assert(String.valueOf(name.eval(env).right.get.get) == "name")
+    }
   }
 
   "NumberLiteral" should {
     "return its appropriate value" in {
       val numberLiteral = NumberLiteral(NumberToken(1, 999))
       assert(numberLiteral.value() == 999)
+    }
+
+    "eval number and return number value" in {
+      val num = NumberLiteral(NumberToken(1, 1))
+      assert(num.eval(new NullEnvironment).right.get.get == 1)
+    }
+  }
+
+  "StringLiteral" should {
+    "return its appropriate value" in {
+      val stringLiteral = StringLiteral(StringToken(1, "aaa"))
+      assert(stringLiteral.value() == "aaa")
+    }
+
+    "eval string and return string value" in {
+      val string = StringLiteral(StringToken(1, "aaa"))
+      assert(string.eval(new NullEnvironment).right.get.get == "aaa")
     }
   }
 }
