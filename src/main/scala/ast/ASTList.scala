@@ -40,9 +40,9 @@ object ASTList {
 
   private[this] val RES: String = "%"
 
-  private[this] val TRUE: Int = 0
+  private[this] val TRUE: Int = 1
 
-  private[this] val FALSE: Int = 1
+  private[this] val FALSE: Int = 0
 
   private[this] val GT: String = ">"
 
@@ -198,8 +198,14 @@ object ASTList {
 
   case class BlockStatement(_c: java.util.List[ASTree]) extends ASTList(_c) {
 
-    override def eval(env: Environment): Either[DiamondException, Option[Any]] =
-      Left(new DiamondException("Not implemented", this))
+    override def eval(
+        env: Environment): Either[DiamondException, Option[Any]] = {
+      // TODO correct?
+      this.toList
+        .filterNot(t => t.isInstanceOf[NullStatement])
+        .map(t => t.eval(env))
+        .last
+    }
   }
 
   // IfStatement
@@ -213,11 +219,29 @@ object ASTList {
     def elseBlock(): Option[ASTree] =
       if (numberOfChildren() > 2) Some(child(2).get) else None
 
-    override def eval(env: Environment): Either[DiamondException, Option[Any]] =
-      Left(new DiamondException("Not implemented", this))
+    override def eval(
+        env: Environment): Either[DiamondException, Option[Any]] = {
+      condition().eval(env) match {
+        case Left(e) => Left(e)
+        case Right(c) => {
+          c match {
+            case Some(cv) =>
+              if (cv.isInstanceOf[Int] && cv.asInstanceOf[Int] != FALSE) {
+                thenBlock().eval(env)
+              } else {
+                elseBlock() match {
+                  case Some(block) => block.eval(env)
+                  case None        => Right(Some(0))
+                }
+              }
+          }
+        }
+      }
+    }
 
     override def toString(): String =
-      "(if " + condition() + " " + thenBlock() + " else " + elseBlock().getOrElse(EMPTY) + ")"
+      "(if " + condition() + " " + thenBlock() + " else " + elseBlock()
+        .getOrElse(EMPTY) + ")"
   }
 
   // WhileStatement
@@ -228,8 +252,22 @@ object ASTList {
 
     def body(): ASTree = child(1).get
 
-    override def eval(env: Environment): Either[DiamondException, Option[Any]] =
-      Left(new DiamondException("Not implemented", this))
+    override def eval(
+        env: Environment): Either[DiamondException, Option[Any]] = {
+      var result: Either[DiamondException, Option[Any]] =
+        Either[DiamondException, Option[Any]]
+      while (true) {
+        val c = condition().eval(env)
+        if (c.right.get
+              .isInstanceOf[Int] && c.right.get.asInstanceOf[Int] == FALSE) {
+          return Right(Some(result))
+        } else {
+          result = body.eval(env)
+        }
+      }
+      // never reacheable??
+      result
+    }
 
     override def toString(): String =
       "(while " + condition() + " " + body() + ")"
