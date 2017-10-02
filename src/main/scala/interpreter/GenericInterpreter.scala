@@ -26,8 +26,7 @@ import token.Token
 
 object GenericInterpreter {
 
-  def run(parser: GenericParser, env: Environment): Unit = {
-    val lexer = new Lexer(new BufferedReader(new InputStreamReader(System.in)))
+  def run(parser: GenericParser, env: Environment, lexer: Lexer): Unit = {
     while (lexer.peek(0) != Token.EOF) {
       parser.parse(lexer) match {
         case Left(e) => e.printStackTrace()

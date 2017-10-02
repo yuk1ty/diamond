@@ -180,7 +180,11 @@ object ASTList {
     }
   }
 
-  case class PrimaryExpr(_c: java.util.List[ASTree]) extends ASTList(_c) {}
+  case class PrimaryExpr(_c: java.util.List[ASTree]) extends ASTList(_c) {
+
+    override def eval(env: Environment): Either[DiamondException, Option[Any]] =
+      Right(Some())
+  }
 
   // NegativeExpr
 

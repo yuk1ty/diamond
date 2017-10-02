@@ -2,7 +2,7 @@ package ast
 
 import ast.ASTLeaf.{Name, NumberLiteral}
 import ast.ASTList._
-import environment.NullEnvironment
+import environment.{NameEnvironment, NullEnvironment}
 import org.scalatest.WordSpec
 import token.{IdentifierToken, NumberToken, StringToken}
 
@@ -91,6 +91,13 @@ class ASTListSpec extends WordSpec {
       {
         assert(expr.eval(new NullEnvironment()).isLeft)
       }
+    }
+  }
+
+  "BlockStatement" should {
+    "evaluate" in {
+      val env = new NameEnvironment
+      env.put("a", Name(StringToken(1, "a")))
     }
   }
 
