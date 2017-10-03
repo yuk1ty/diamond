@@ -172,19 +172,16 @@ object ASTList {
 
     def newInstance(c: List[ASTree]): PrimaryExpr = new PrimaryExpr(c.asJava)
 
-    def create(c: List[ASTree]): ASTree = {
-      c.size match {
-        case 1 => c.head
-        case _ => new PrimaryExpr(c.asJava)
+    def create(_c: java.util.List[ASTree]): ASTree = {
+      if (_c.size == 1) {
+        _c.get(0)
+      } else {
+        new PrimaryExpr(_c)
       }
     }
   }
 
-  case class PrimaryExpr(_c: java.util.List[ASTree]) extends ASTList(_c) {
-
-    override def eval(env: Environment): Either[DiamondException, Option[Any]] =
-      Right(Some())
-  }
+  case class PrimaryExpr(_c: java.util.List[ASTree]) extends ASTList(_c) {}
 
   // NegativeExpr
 
