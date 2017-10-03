@@ -322,7 +322,7 @@ public class Parser {
                             return results.get(0);
                         else
                             // modified for Scala ASTList class
-                            return ASTList$.MODULE$.newInstance(results);
+                            return new ASTList(results);
                     }
                 };
             return f;
