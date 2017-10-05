@@ -74,6 +74,7 @@ class LeftMostDerivationParser(_lexer: Lexer) {
 
       if (token.isNumber) {
         val numberLiteral = NumberLiteral(token)
+
         Right(numberLiteral)
       } else {
         Left(new ParseException(token))
@@ -93,6 +94,7 @@ class LeftMostDerivationParser(_lexer: Lexer) {
 
   private def isToken(name: String): Boolean = {
     val token = _lexer.peek(0)
-    return token.isIdentifier && name == token.getText
+
+    token.isIdentifier && name == token.getText
   }
 }

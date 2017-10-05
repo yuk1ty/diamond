@@ -22,31 +22,11 @@ import token.Token
  * limitations under the License.
  */
 
-class GenericParserSpec extends WordSpec {
+class GenericParserSpec extends AbstractParserSpec {
 
   "parse" should {
-    class StandardInputSnatcher extends InputStream {
-
-      private val buffer = new StringBuilder
-
-      def input(in: String): Unit = {
-        buffer.append(in).append(System.getProperty("line.separator"))
-      }
-
-      override def read(): Int = {
-        if (buffer.isEmpty) {
-          return -1
-        }
-
-        val result = buffer.charAt(0)
-        buffer.deleteCharAt(0)
-
-        result
-      }
-    }
-
     "return appropriate result" in {
-      val snatcher = new StandardInputSnatcher
+      val snatcher = createNewSnatcher()
       val code = "sum = (1 + 2) + 3\n" + "sum\n"
       snatcher.input(code)
       val lexer =
@@ -59,7 +39,7 @@ class GenericParserSpec extends WordSpec {
     }
 
     "return block statement" in {
-      val snatcher = new StandardInputSnatcher
+      val snatcher = createNewSnatcher()
       val code = new StringBuilder()
         .append("if i % 2 == 0 {\n")
         .append("even = even + 1\n")
