@@ -33,8 +33,12 @@ class LeftMostDerivationParserSpec extends AbstractParserSpec {
         new Lexer(new LineNumberReader(new InputStreamReader(snatcher)))
 
       val llParser = new LeftMostDerivationParser(lexer)
-      val result = llParser.expression()
-      println("=> " + result)
+      llParser.expression() match {
+        case Left(e) => e.printStackTrace()
+        case Right(r) => {
+          println("=>" + r.toString())
+        }
+      }
     }
   }
 }
