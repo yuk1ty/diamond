@@ -1,7 +1,7 @@
 package parser
 
-import ast.ASTLeaf.{Name, NumberLiteral, StringLiteral}
-import ast.ASTList._
+import ast.ASTLeaf.Name
+import ast.ASTList.PrimaryExpr
 import ast._
 import lexer.Lexer
 import parser.GenericParser.program
@@ -27,7 +27,7 @@ import token.Token
 
 object GenericParser {
 
-  private val reversed: Set[String] = Set(";", "}", Token.EOL)
+  private val reserved: Set[String] = Set(";", "}", Token.EOL)
 
   private val operators: Operators = new Operators
 
@@ -48,55 +48,44 @@ object GenericParser {
   private def assembleParser(): Parser = {
     import collection.JavaConverters._
 
-    val expr0 = Parser.rule()
+    type FromASTList = Class[_ <: ASTList]
+
+    val expr0 = Parser.rule
     val primary = Parser
       .rule(classOf[PrimaryExpr])
       .or(
-        Parser.rule().sep("(").ast(expr0).sep(")"),
-        Parser.rule().number(classOf[NumberLiteral]),
-        Parser.rule().identifier(classOf[Name],
-                          reversed.asJava),
-        Parser.rule().string(classOf[StringLiteral])
+        Parser.rule.sep("(").ast(expr0).sep(")"),
+        Parser.rule.number(classOf[ASTLeaf.NumberLiteral]),
+        Parser.rule.identifier(classOf[ASTLeaf.Name], reserved.asJava),
+        Parser.rule.string(classOf[ASTLeaf.StringLiteral])
       )
-    val factor = Parser.rule().or(
-      Parser
-        .rule(classOf[NegativeExpr])
-        .sep("-")
-        .ast(primary),
+    val factor = Parser.rule.or(
+      Parser.rule(classOf[ASTList.NegativeExpr]).sep("-").ast(primary),
       primary)
-    val expr = expr0.expression(classOf[BinaryExpr],
-                                factor,
-                                operators)
+    val expr = expr0.expression(classOf[ASTList.BinaryExpr], factor, operators)
 
-    val statement0 = Parser.rule()
+    val statement0 = Parser.rule
     val block = Parser
-      .rule(classOf[BlockStatement])
+      .rule(classOf[ASTList.BlockStatement])
       .sep("{")
       .option(statement0)
-      .repeat(Parser.rule().sep(";", Token.EOL).option(statement0))
+      .repeat(Parser.rule.sep(";", Token.EOL).option(statement0))
       .sep("}")
-    val simple =
-      Parser.rule(classOf[PrimaryExpr]).ast(expr)
+    val simple = Parser.rule(classOf[PrimaryExpr]).ast(expr)
     val statement = statement0.or(
       Parser
-        .rule(classOf[IfStatement])
+        .rule(classOf[ASTList.IfStatement])
         .sep("if")
         .ast(expr)
         .ast(block)
-        .option(Parser.rule().sep("else").ast(block)),
-      Parser
-        .rule(classOf[WhileStatement])
-        .sep("while")
-        .ast(expr)
-        .ast(block),
+        .option(Parser.rule.sep("else").ast(block)),
+      Parser.rule(classOf[ASTList.WhileStatement]).sep("while").ast(expr).ast(block),
       simple
     )
 
-    val program = Parser.rule().or(
-      statement,
-      Parser
-        .rule(classOf[NullStatement])
-        .sep(";", Token.EOL))
+    val program = Parser.rule
+      .or(statement, Parser.rule(classOf[ASTList.NullStatement]))
+      .sep(";", Token.EOL)
 
     program
   }

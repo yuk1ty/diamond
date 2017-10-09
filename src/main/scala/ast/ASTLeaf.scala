@@ -64,7 +64,7 @@ sealed class ASTLeaf(_token: Token) extends ASTree {
 
   override def numberOfChildren(): Int = 0
 
-  override def into_iter(): Iterator[ASTree] = ASTLeaf.EMPTY.iterator
+  override def intoIter(): Iterator[ASTree] = ASTLeaf.EMPTY.iterator
 
   override def toString(): String = token.getText
 

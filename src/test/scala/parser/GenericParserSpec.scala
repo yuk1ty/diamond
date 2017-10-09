@@ -27,7 +27,7 @@ class GenericParserSpec extends AbstractParserSpec {
   "parse" should {
     "return appropriate result" in {
       val snatcher = createNewSnatcher()
-      val code = "sum = (1 + 2) + 3\n" + "sum\n"
+      val code = "sum = (1 + 2) + 3;\n" + "sum;"
       snatcher.input(code)
       val lexer =
         new Lexer(new LineNumberReader(new InputStreamReader(snatcher)))
@@ -43,7 +43,7 @@ class GenericParserSpec extends AbstractParserSpec {
       val code = new StringBuilder()
         .append("if i % 2 == 0 {\n")
         .append("even = even + 1\n")
-        .append("}\n")
+        .append("};")
       snatcher.input(code.toString())
       val lexer =
         new Lexer(new LineNumberReader(new InputStreamReader(snatcher)))

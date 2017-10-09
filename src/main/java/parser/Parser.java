@@ -321,7 +321,6 @@ public class Parser {
                         if (results.size() == 1)
                             return results.get(0);
                         else
-                            // modified for Scala ASTList class
                             return new ASTList(results);
                     }
                 };
@@ -330,17 +329,21 @@ public class Parser {
 
         protected static Factory get(Class<? extends ASTree> clazz,
                                      Class<?> argType) {
-            if (clazz == null)
+            if (clazz == null) {
                 return null;
-            try {
-                final Method m = clazz.getMethod(factoryName,
-                        new Class<?>[]{argType});
-                return new Factory() {
-                    protected ASTree make0(Object arg) throws Exception {
-                        return (ASTree) m.invoke(null, arg);
-                    }
-                };
-            } catch (NoSuchMethodException e) {
+            }
+
+            if (clazz.equals(ASTList.PrimaryExpr.class)) {
+                try {
+                    final Method m = clazz.getMethod(factoryName,
+                            new Class<?>[]{argType});
+                    return new Factory() {
+                        protected ASTree make0(Object arg) throws Exception {
+                            return (ASTree) m.invoke(null, arg);
+                        }
+                    };
+                } catch (NoSuchMethodException e) {
+                }
             }
             try {
                 final Constructor<? extends ASTree> c

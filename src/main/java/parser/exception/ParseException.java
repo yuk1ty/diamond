@@ -1,4 +1,6 @@
-package parser.exception;/*
+package parser.exception;
+
+/*
 * Copyright 2017 Yuki Toyoda
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,6 +21,7 @@ import token.Token;
 import java.io.IOException;
 
 public class ParseException extends Exception {
+
     public ParseException(Token t) {
         this("", t);
     }

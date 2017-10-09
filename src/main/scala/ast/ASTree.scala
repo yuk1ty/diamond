@@ -25,11 +25,11 @@ trait ASTree extends Iterable[ASTree] {
 
   def numberOfChildren(): Int
 
-  def into_iter(): Iterator[ASTree]
+  def intoIter(): Iterator[ASTree]
 
   def location: String
 
-  def iterator: Iterator[ASTree] = into_iter()
+  def iterator: Iterator[ASTree] = intoIter()
 
   // Parser.java is not supported for Generics,
   // so the return value of this def is Any

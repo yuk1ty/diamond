@@ -181,7 +181,8 @@ object ASTList {
     }
   }
 
-  case class PrimaryExpr(_c: java.util.List[ASTree]) extends ASTList(_c) {}
+  case class PrimaryExpr(_c: java.util.List[ASTree]) extends ASTList(_c) {
+  }
 
   // NegativeExpr
 
@@ -290,7 +291,7 @@ sealed class ASTList(_list: java.util.List[ASTree]) extends ASTree {
 
   override def numberOfChildren(): Int = children.size
 
-  override def into_iter(): Iterator[ASTree] = children.iterator
+  override def intoIter(): Iterator[ASTree] = children.iterator
 
   override def location: String = {
     children.map(f => f.location).filter(s => !s.isEmpty).head
@@ -302,7 +303,7 @@ sealed class ASTList(_list: java.util.List[ASTree]) extends ASTree {
 
   override def toString(): String = {
     val joiner = new StringJoiner(" ")
-    children.map(e => e.toString()).foreach(_ => joiner.add(_))
+    children.map(_.toString()).foreach(_ => joiner.add(_))
     joiner.toString
   }
 }
